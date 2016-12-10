@@ -1,7 +1,12 @@
 export default function parse(hash) {
+  if (!hash) {
+    return [];
+  }
+
   return hash
     .substring(2)
     .split('/')
+    .filter(segment => segment)
     .map(segment => ~segment.indexOf(';') ? parseSegment(segment) : segment);
 }
 

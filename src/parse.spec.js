@@ -2,6 +2,18 @@ import { expect } from 'chai';
 import parse from './parse';
 
 describe('parse', () => {
+  describe('when the location hash is null/undefined', () => {
+    it('should return an empty array', () => {
+      expect(parse()).to.deep.equal([]);
+    });
+  });
+
+  describe('when the location hash is empty', () => {
+    it('should return an empty array', () => {
+      expect(parse('#')).to.deep.equal([]);
+    });
+  });
+
   describe('without params', () => {
     it('should parse the hash into segment strings', () => {
       expect(parse('#/a/b/c')).to.deep.equal(['a', 'b', 'c']);
