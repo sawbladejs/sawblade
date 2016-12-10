@@ -10,26 +10,41 @@ describe('sawblade', () => {
 
   afterEach(() => parse.restore());
 
-  describe('when invoked with a callback', () => {
-    const callback = spy();
+  describe('given an initial location hash', () => {
+    const hash = '#/';
+    const route = [];
 
-    beforeEach(() => sawblade(callback));
+    beforeEach(() => window.location.hash = hash);
 
-    afterEach(() => callback.reset());
+    afterEach(() => delete window.location.hash);
 
-    describe('when the location hash changes', () => {
-      const hash = '#/a/b/c';
-      const route = ['x', 'y', 'z'];
+    describe('when invoked with a callback', () => {
+      const callback = spy();
 
       beforeEach(() => {
         parse.withArgs(hash).returns(route);
-        
-        window.location.hash = hash;
-        window.dispatchEvent(new HashChangeEvent('hashchange', { bubbles: true, cancelable: false }));
+        sawblade(callback);
       });
 
-      it('should invoke the callback with the parsed route', () => {
+      afterEach(() => callback.reset());
+
+      it('should initially invoke the callback with the parsed route', () => {
         expect(callback).to.be.calledWith(route);
+      });
+
+      describe('when the location hash changes', () => {
+        const hash = '#/a/b/c';
+        const route = ['x', 'y', 'z'];
+
+        beforeEach(() => {
+          parse.withArgs(hash).returns(route);
+          window.location.hash = hash;
+          window.dispatchEvent(new HashChangeEvent('hashchange', { bubbles: true, cancelable: false }));
+        });
+
+        it('should invoke the callback with the parsed route', () => {
+          expect(callback).to.be.calledWith(route);
+        });
       });
     });
   });
