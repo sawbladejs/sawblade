@@ -1,6 +1,6 @@
 {
   "name": "sawblade",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Yet another client-side routing library",
   "repository": {
     "type": "git",

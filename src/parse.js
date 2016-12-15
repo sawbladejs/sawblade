@@ -7,7 +7,7 @@ export default function parse(hash) {
     .substring(2)
     .split('/')
     .filter(segment => segment)
-    .map(segment => ~segment.indexOf(';') ? parseSegment(segment) : segment);
+    .map(parseSegment);
 }
 
 function parseSegment(segment) {
