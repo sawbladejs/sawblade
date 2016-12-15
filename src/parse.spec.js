@@ -17,8 +17,8 @@ describe('parse', () => {
   it('should parse the hash into segment objects', () => {
     const hash = '#/a;page=1;x=y/b';
     const expected = [
-      { path: 'a', query: { page: 1, x: 'y' } },
-      { path: 'b', query: {} }
+      { path: 'a', params: { page: 1, x: 'y' } },
+      { path: 'b', params: {} }
     ];
     expect(parse(hash)).to.deep.equal(expected);
   });
