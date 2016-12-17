@@ -1,8 +1,4 @@
-import parse from './parse';
+import watch from './watch';
+import hashUrl from './hash-url';
 
-export default function sawblade(callback) {
-  callback(parse(window.location.hash));
-  window.addEventListener('hashchange', () => {
-    callback(parse(window.location.hash));
-  });
-}
+export { watch, hashUrl };
