@@ -1,6 +1,6 @@
 {
   "name": "sawblade",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Yet another client-side routing library",
   "repository": {
     "type": "git",
@@ -10,7 +10,8 @@
   "main": "dist/index.js",
   "files": [
     "dist/index.js",
-    "dist/parse.js"
+    "dist/hash-url.js",
+    "dist/watch.js"
   ],
   "scripts": {
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --require jsdom-global/register --require ./test.bootstrap.js --compilers js:babel-core/register \"src/**/*.spec.js\"",
