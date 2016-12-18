@@ -18,10 +18,10 @@ describe('watch', () => {
       route = watch(url);
     });
 
-    describe('when configured only with route /', () => {
+    describe('when configured only with empty root route', () => {
       const callback = spy();
 
-      beforeEach(() => route('/', callback));
+      beforeEach(() => route('', callback));
 
       afterEach(() => callback.reset());
 
@@ -42,16 +42,18 @@ describe('watch', () => {
       });
     });
 
-    describe('when configured with route / and sub-routes posts and users', () => {
+    describe('when configured with empty root route and sub-routes /posts and /users', () => {
       const postsCallback = spy();
       const usersCallback = spy();
 
       beforeEach(() => {
-        route('/', ({ route }) => {
-          route('posts', postsCallback);
-          route('users', usersCallback);
+        route('', ({ route }) => {
+          route('/posts', postsCallback);
+          route('/users', usersCallback);
         });
       });
+
+      afterEach(() => [postsCallback, usersCallback].forEach(callback => callback.reset()));
 
       describe('when the URL changes to /posts', () => {
         beforeEach(() => changeUrl('/posts'));
@@ -61,7 +63,7 @@ describe('watch', () => {
         });
       });
 
-      describe('when the URL changes to /users;page=3', () => {
+      describe('when the URL changes to /users;page=3;sort=asc', () => {
         beforeEach(() => changeUrl('/users;page=3;sort=asc'));
 
         it('should invoke the users callback', () => {
@@ -74,6 +76,25 @@ describe('watch', () => {
             params = usersCallback.getCall(0).args[0].params;
           }
           expect(params).to.deep.equal({ page: 3, sort: 'asc' });
+        });
+
+        describe('when the URL changes to /users;page=4;sort=asc', () => {
+          beforeEach(() => {
+            usersCallback.reset();
+            changeUrl('/users;page=4;sort=asc');
+          });
+
+          it('should invoke the users callback', () => {
+            expect(usersCallback).to.have.been.called;
+          });
+
+          it('should pass parameters to callback', () => {
+            let params = null;
+            if (usersCallback.called) {
+              params = usersCallback.getCall(1).args[0].params;
+            }
+            expect(params).to.deep.equal({ page: 4, sort: 'asc' });
+          });
         });
       });
     });
