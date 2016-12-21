@@ -1,10 +1,15 @@
 export default function watch(handleUrlChanges) {
   let root;
   let config;
+  let deferred;
 
   let previousRouteInstances = [];
 
   handleUrlChanges(next => {
+    if (!config) {
+      return deferred = next;
+    }
+
     const nextRouteInstances = createRouteInstances(next, config);
 
     previousRouteInstances
@@ -88,5 +93,10 @@ export default function watch(handleUrlChanges) {
   return function route(r, c) {
     root = r;
     config = c;
+
+    if (deferred) {
+      handleUrlChanges(deferred);
+      deferred = null;
+    }
   };
 }
