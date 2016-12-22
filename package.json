@@ -1,13 +1,13 @@
 {
   "name": "sawblade",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Yet another client-side routing library",
   "repository": {
     "type": "git",
     "url": "https://github.com/therealnicksaunders/sawblade"
   },
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "dist/index",
   "files": [
     "dist/index.js",
     "dist/hash-url.js",
