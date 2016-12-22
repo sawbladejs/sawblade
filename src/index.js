@@ -1,4 +1,3 @@
-import watch from './watch';
-import hashUrl from './hash-url';
+import { bootstrap } from './router';
 
-export { watch, hashUrl };
+export { bootstrap };

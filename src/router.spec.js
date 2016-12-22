@@ -1,14 +1,20 @@
 import { expect } from 'chai';
 import { stub, spy, match } from 'sinon';
-import watch from './watch';
+import { bootstrap } from './router';
 
-describe('watch (configured with a URL provider)', () => {
-  const rootContext = 'root context';
-
-  let route;
+describe('router', () => {
   let changeUrl;
 
-  beforeEach(() => route = watch(callback => changeUrl = callback));
+  const rootContext = 'root context';
+  const urlProvider = {
+    observe(callback) {
+      changeUrl = callback;
+    }
+  };
+
+  function createRoutes(routes) {
+    return bootstrap(rootContext, routes, urlProvider);
+  }
 
   describe('when configured with two root-level routes', () => {
     const defaultRender = stub();
@@ -22,7 +28,7 @@ describe('watch (configured with a URL provider)', () => {
     const usersTeardown = spy();
 
     beforeEach(() => {
-      route(rootContext, [
+      createRoutes([
         {
           path: '/',
           render: defaultRender,
@@ -100,10 +106,11 @@ describe('watch (configured with a URL provider)', () => {
     const render = spy();
 
     beforeEach(() => {
-      route(rootContext, [
+      createRoutes([
         {
           path: '/:id',
-          render
+          render,
+          teardown: () => {}
         }
       ]);
     });
@@ -133,7 +140,7 @@ describe('watch (configured with a URL provider)', () => {
     const detailRender = spy();
 
     beforeEach(() => {
-      route(rootContext, [
+      createRoutes([
         {
           path: '/users',
           render: usersRender,
