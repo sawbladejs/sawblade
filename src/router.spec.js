@@ -91,10 +91,6 @@ describe('router', () => {
     describe('when the URL changes to /users;x=y;page=3', () => {
       beforeEach(() => changeUrl('/users;x=y;page=3'));
 
-      it('should provide the matched path to the render function', () => {
-        expect(usersRender).to.have.been.calledWith(match.has('path', '/users'));
-      });
-
       it('should provide the matrix parameters to the render function', () => {
         expect(usersRender).to.have.been.calledWith(match.has('params', match({ x: 'y', page: 3 })));
       });
@@ -104,7 +100,7 @@ describe('router', () => {
 
         it('should tear down the users route and re-activate with new path and params', () => {
           expect(usersTeardown).to.have.been.called;
-          expect(usersRender).to.have.been.calledWith(match(({ params, path }) => params.page === 4 && path === '/users'));
+          expect(usersRender).to.have.been.calledWith(match.has('params', match({ page: 4 })))
         });
       });
     });
