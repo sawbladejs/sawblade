@@ -1,3 +1,3 @@
-import { bootstrap } from './router';
+import { bootstrap, navigate } from './router';
 
-export { bootstrap };
+export { bootstrap, navigate };

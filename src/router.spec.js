@@ -1,12 +1,14 @@
 import { expect } from 'chai';
 import { stub, spy, match } from 'sinon';
-import { bootstrap } from './router';
+import { bootstrap, navigate } from './router';
 
 describe('router', () => {
   let changeUrl;
 
   const rootContext = 'root context';
   const urlProvider = {
+    get: stub(),
+    set: spy(),
     observe(callback) {
       changeUrl = callback;
     }
@@ -15,6 +17,8 @@ describe('router', () => {
   function createRoutes(routes) {
     return bootstrap(rootContext, routes, urlProvider);
   }
+
+  afterEach(() => urlProvider.set.reset());
 
   describe('when configured with two root-level routes', () => {
     const defaultRender = stub();
@@ -187,6 +191,108 @@ describe('router', () => {
 
         it('should activate the detail route', () => {
           expect(detailRender).to.have.been.calledWith(match.has('params', match({ id: 123 })));
+        });
+      });
+    });
+  });
+
+  describe('navigate function', () => {
+    describe('given a current URL of /users/', () => {
+      beforeEach(() => urlProvider.get.returns('/users/'));
+
+      describe('when called with /', () => {
+        beforeEach(() => navigate('/'));
+
+        it('should navigate to /', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/');
+        });
+      });
+
+      describe('when called with /posts/', () => {
+        beforeEach(() => navigate('/posts/'));
+
+        it('should navigate to /posts/', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/posts/');
+        });
+      });
+
+      describe('when called with 123', () => {
+        beforeEach(() => navigate('123'));
+
+        it('should navigate to /users/123', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/users/123');
+        });
+      });
+
+      describe('when called with ./123', () => {
+        beforeEach(() => navigate('./123'));
+
+        it('should navigate to /users/123', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/users/123');
+        });
+      });
+
+      describe('when called with ../posts', () => {
+        beforeEach(() => navigate('../posts'));
+
+        it('should navigate to /posts', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/posts');
+        });
+      });
+
+      describe('when called with ;page=10', () => {
+        beforeEach(() => navigate(';page=10'));
+
+        it('should navigate to /users/;page=10', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/users/;page=10');
+        });
+      });
+    });
+
+    describe('given a current URL of /a/b/c', () => {
+      beforeEach(() => urlProvider.get.returns('/a/b/c'));
+
+      describe('when called with ../test', () => {
+        beforeEach(() => navigate('../test'));
+
+        it('should navigate to /a/b/test', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/a/test');
+        });
+      });
+
+      describe('when called with ./test', () => {
+        beforeEach(() => navigate('./test'));
+
+        it('should navigate to /a/b/test', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/a/b/test');
+        });
+      });
+
+      describe('when called with test', () => {
+        beforeEach(() => navigate('test'));
+
+        it('should navigate to /a/b/test', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/a/b/test');
+        });
+      });
+
+      describe('when called with ;page=3;x=y', () => {
+        beforeEach(() => navigate(';page=3;x=y'));
+
+        it('should navigate to /a/b/c;page=3;x=y', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/a/b/c;page=3;x=y');
+        });
+      });
+    });
+
+    describe('given an initial URL of /a/b;c=d;e=f', () => {
+      beforeEach(() => urlProvider.get.returns('/a/b;c=d;e=f'));
+
+      describe('when called with ;c=g', () => {
+        beforeEach(() => navigate(';c=g'));
+
+        it('should navigate to /a/b;c=g;e=f', () => {
+          expect(urlProvider.set).to.have.been.calledWith('/a/b;c=g;e=f');
         });
       });
     });
