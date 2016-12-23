@@ -32,6 +32,7 @@ function createRouter(root, routeConfigs) {
       .filter(routeInstance => !routeInstance.context)
       .map(routeInstance => ({ routeInstance, position: nextRouteInstances.indexOf(routeInstance) }))
       .forEach(({ routeInstance, position }) => routeInstance.context = routeInstance.routeConfig.render({
+        path: routeInstance.routeConfig.path,
         parent: position < 1 ? root : nextRouteInstances[position - 1].context,
         params: getParams(routeInstance.segment, routeInstance.routeConfig.path)
       }));
