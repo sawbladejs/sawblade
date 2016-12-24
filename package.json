@@ -1,6 +1,6 @@
 {
   "name": "sawblade",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Cutting through the B.S. of routing",
   "repository": {
     "type": "git",
@@ -8,11 +8,9 @@
   },
   "license": "MIT",
   "main": "index.js",
-  "files": [
-    "index.js"
-  ],
+  "files": ["index.js"],
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --require ./test.bootstrap.js --compilers js:babel-core/register \"src/**/*.spec.js\"",
+    "test": "./node_modules/.bin/mocha --require ./test.bootstrap.js --compilers js:babel-core/register \"src/**/*.spec.js\"",
     "prepublish": "./node_modules/.bin/webpack"
   },
   "devDependencies": {
