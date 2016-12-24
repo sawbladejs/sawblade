@@ -42,7 +42,7 @@ function createRouter(root, routeConfigs) {
 
 function createRouteInstances(url, routeConfigs) {
   const segment = url.match(/(\/[^/]*)/)[0];
-const routeConfig = routeConfigs.find(configsMatching(segment));
+  const routeConfig = routeConfigs.find(configsMatching(segment));
   const routeInstance = new RouteInstance(segment, routeConfig);
   const descendantUrl = url.substring(segment.length);
   const { children } = routeConfig;

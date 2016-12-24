@@ -98,7 +98,7 @@ describe('router', () => {
       describe('and then changes to /users;x=y;page=4', () => {
         beforeEach(() => changeUrl('/users;x=y;page=4'));
 
-        it('should tear down the users route and re-activate with new path and params', () => {
+        it('should tear down the users route and re-activate with new params', () => {
           expect(usersTeardown).to.have.been.called;
           expect(usersRender).to.have.been.calledWith(match.has('params', match({ page: 4 })))
         });
