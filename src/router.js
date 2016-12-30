@@ -105,7 +105,7 @@ class RouteInstance {
   }
 
   update() {
-    return this.routeConfig.update(this.params);
+    return this.routeConfig.update({ params: this.params, context: this.context });
   }
 
   teardown() {

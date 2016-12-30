@@ -104,7 +104,9 @@ describe('router', () => {
         beforeEach(() => changeUrl('/users;x=y;page=4'));
 
         it('should update the users route with new params', () => {
-          expect(usersUpdate).to.have.been.calledWith(match({ page: 4 }));
+          expect(usersUpdate).to.have.been.calledWithMatch(({ context, params }) => {
+            return context === usersContext && params.page === 4;
+          });
         });
       });
     });
@@ -138,7 +140,7 @@ describe('router', () => {
         beforeEach(() => changeUrl('/whatever'));
 
         it('should provide the id parameter value "whatever" to the update method', () => {
-          expect(update).to.have.been.calledWith(match({ id: 'whatever' }));
+          expect(update).to.have.been.calledWith(match({ params: { id: 'whatever' } }));
         });
       });
     });
