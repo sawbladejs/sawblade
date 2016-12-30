@@ -104,7 +104,7 @@ describe('router', () => {
         beforeEach(() => changeUrl('/users;x=y;page=4'));
 
         it('should update the users route with new params', () => {
-          expect(usersUpdate).to.have.been.calledWith(match.has('params', match({ page: 4 })))
+          expect(usersUpdate).to.have.been.calledWith(match({ page: 4 }));
         });
       });
     });
@@ -131,14 +131,14 @@ describe('router', () => {
       beforeEach(() => changeUrl('/blah'));
 
       it('should provide the id parameter value "blah" to the render method', () => {
-        expect(render).to.have.been.calledWith(match.has('params', { id: 'blah' }));
+        expect(render).to.have.been.calledWith(match.has('params', match({ id: 'blah' })));
       });
 
       describe('and then changes to /whatever', () => {
         beforeEach(() => changeUrl('/whatever'));
 
         it('should provide the id parameter value "whatever" to the update method', () => {
-          expect(update).to.have.been.calledWith(match.has('params', { id: 'whatever' }));
+          expect(update).to.have.been.calledWith(match({ id: 'whatever' }));
         });
       });
     });
