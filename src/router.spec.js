@@ -215,6 +215,23 @@ describe('router', () => {
     });
   });
 
+  describe('when configured with a route with no update method', () => {
+    beforeEach(() => {
+      createRoutes([
+        {
+          path: '/',
+          render: () => {},
+          teardown: () => {}
+        }
+      ]);
+    });
+
+    it('should not throw when the route is updated', () => {
+      changeUrl('/');
+      changeUrl('/;page=3');
+    });
+  });
+
   describe('navigate function', () => {
     describe('given a current URL of /users/', () => {
       beforeEach(() => urlProvider.get.returns('/users/'));
