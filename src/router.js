@@ -16,17 +16,20 @@ function createRouter(root, routeConfigs) {
     const nextRouteInstances = createRouteInstances(url, routeConfigs);
 
     previousRouteInstances
-      .filter(previous => !nextRouteInstances.find(next => previous.equals(next)))
+      .filter(previous => !nextRouteInstances.find(next => previous.sameConfig(next)))
       .reverse()
       .forEach(routeInstance => routeInstance.teardown());
 
     nextRouteInstances
       .map(next => ({
-        previous: previousRouteInstances.find(previous => previous.equals(next)),
+        previous: previousRouteInstances.find(previous => previous.sameConfig(next)),
         next
       }))
       .filter(({ previous }) => previous)
-      .forEach(({ previous, next }) => next.context = previous.context);
+      .forEach(({ previous, next }) => {
+        next.context = previous.context;
+        next.routeConfig.update({ params: getParams(next.segment, next.routeConfig.path) });
+      });
 
     nextRouteInstances
       .filter(routeInstance => !routeInstance.context)
@@ -76,8 +79,8 @@ class RouteInstance {
     this.routeConfig = routeConfig;
   }
 
-  equals(other) {
-    return this.segment === other.segment && this.routeConfig === other.routeConfig;
+  sameConfig(other) {
+    return this.routeConfig === other.routeConfig;
   }
 
   teardown() {

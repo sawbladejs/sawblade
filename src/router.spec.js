@@ -29,6 +29,7 @@ describe('router', () => {
     const usersRender = stub();
     const usersContext = 'users context';
     usersRender.returns(usersContext);
+    const usersUpdate = spy();
     const usersTeardown = spy();
 
     beforeEach(() => {
@@ -36,17 +37,21 @@ describe('router', () => {
         {
           path: '/',
           render: defaultRender,
+          update: () => {},
           teardown: defaultTeardown
         },
         {
           path: '/users',
           render: usersRender,
+          update: usersUpdate,
           teardown: usersTeardown
         }
       ]);
     });
 
-    afterEach(() => [defaultRender, defaultTeardown, usersRender, usersTeardown].forEach(spy => spy.reset()));
+    afterEach(() => {
+      [defaultRender, defaultTeardown, usersRender, usersUpdate, usersTeardown].forEach(spy => spy.reset());
+    });
 
     describe('when the URL changes to /', () => {
       beforeEach(() => changeUrl('/'));
@@ -98,9 +103,8 @@ describe('router', () => {
       describe('and then changes to /users;x=y;page=4', () => {
         beforeEach(() => changeUrl('/users;x=y;page=4'));
 
-        it('should tear down the users route and re-activate with new params', () => {
-          expect(usersTeardown).to.have.been.called;
-          expect(usersRender).to.have.been.calledWith(match.has('params', match({ page: 4 })))
+        it('should update the users route with new params', () => {
+          expect(usersUpdate).to.have.been.calledWith(match.has('params', match({ page: 4 })))
         });
       });
     });
@@ -108,24 +112,34 @@ describe('router', () => {
 
   describe('when configured with a route with a named parameter', () => {
     const render = spy();
+    const update = spy();
 
     beforeEach(() => {
       createRoutes([
         {
           path: '/:id',
           render,
+          update,
           teardown: () => {}
         }
       ]);
     });
 
-    afterEach(() => render.reset());
+    afterEach(() => [render, update].forEach(spy => spy.reset()));
 
     describe('when the URL changes to /blah', () => {
       beforeEach(() => changeUrl('/blah'));
 
       it('should provide the id parameter value "blah" to the render method', () => {
         expect(render).to.have.been.calledWith(match.has('params', { id: 'blah' }));
+      });
+
+      describe('and then changes to /whatever', () => {
+        beforeEach(() => changeUrl('/whatever'));
+
+        it('should provide the id parameter value "whatever" to the update method', () => {
+          expect(update).to.have.been.calledWith(match.has('params', { id: 'whatever' }));
+        });
       });
     });
   });
@@ -148,16 +162,19 @@ describe('router', () => {
         {
           path: '/users',
           render: usersRender,
+          update: () => {},
           teardown: usersTeardown,
           children: [
             {
               path: '/list',
               render: listRender,
+              update: () => {},
               teardown: listTeardown
             },
             {
               path: '/:id',
               render: detailRender,
+              update: () => {},
               teardown: () => {}
             }
           ]
