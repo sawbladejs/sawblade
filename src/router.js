@@ -28,16 +28,15 @@ function createRouter(root, routeConfigs) {
       .filter(({ previous }) => previous)
       .forEach(({ previous, next }) => {
         next.context = previous.context;
-        next.routeConfig.update({ params: getParams(next.segment, next.routeConfig.path) });
+        next.update();
       });
 
     nextRouteInstances
       .filter(routeInstance => !routeInstance.context)
       .map(routeInstance => ({ routeInstance, position: nextRouteInstances.indexOf(routeInstance) }))
-      .forEach(({ routeInstance, position }) => routeInstance.context = routeInstance.routeConfig.render({
-        parent: position < 1 ? root : nextRouteInstances[position - 1].context,
-        params: getParams(routeInstance.segment, routeInstance.routeConfig.path)
-      }));
+      .forEach(({ routeInstance, position }) => {
+        routeInstance.render(position < 1 ? root : nextRouteInstances[position - 1].context);
+      });
 
       previousRouteInstances = nextRouteInstances;
   };
@@ -79,28 +78,39 @@ class RouteInstance {
     this.routeConfig = routeConfig;
   }
 
+  get params() {
+    const { segment, routeConfig } = this;
+    const { path } = routeConfig;
+
+    const segments = segment.split(';');
+
+    const params = segments.slice(1)
+      .map(param => param.split('='))
+      .map(param => ({ [param[0]]: normalizeParamValue(param[1]) }))
+      .reduce((params, param) => Object.assign({}, params, param), {});
+
+    if (path.startsWith('/:')) {
+      params[path.substring(2)] = normalizeParamValue(segments[0].substring(1));
+    }
+
+    return params;
+  }
+
   sameConfig(other) {
     return this.routeConfig === other.routeConfig;
   }
 
+  render(parent) {
+    return this.context = this.routeConfig.render({ parent, params: this.params });
+  }
+
+  update() {
+    return this.routeConfig.update({ params: this.params });
+  }
+
   teardown() {
-    this.routeConfig.teardown(this.context);
+    return this.routeConfig.teardown(this.context);
   }
-}
-
-function getParams(segment, configPath) {
-  const segments = segment.split(';');
-
-  const params = segments.slice(1)
-    .map(param => param.split('='))
-    .map(param => ({ [param[0]]: normalizeParamValue(param[1]) }))
-    .reduce((params, param) => Object.assign({}, params, param), {});
-
-  if (configPath.startsWith('/:')) {
-    params[configPath.substring(2)] = normalizeParamValue(segments[0].substring(1));
-  }
-
-  return params;
 }
 
 function normalizeParamValue(value) {
