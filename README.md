@@ -21,7 +21,7 @@ Installation
 Install via npm:
 ```
 npm i sawblade
-npm i sawblade-hash # This is the only URL provider currently available and supports hash-based URLs, i.e. #/blah/123
+npm i sawblade-hash # currently the only URL provider available; supports hash-based URLs like #/blah
 ```
 Then import/require via your favorite module loader.
 
