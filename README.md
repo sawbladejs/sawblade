@@ -16,6 +16,15 @@ I was loving [Svelte](https://github.com/sveltejs/svelte), but it didn't have a 
 
 As you've probably already guessed, nothing matched (at least as far as I could tell), so this project was born.
 
+Installation
+------------
+Install via npm:
+```
+npm i sawblade
+npm i sawblade-hash # This is the only URL provider currently available and supports hash-based URLs, i.e. #/blah/123
+```
+Then import/require via your favorite module loader.
+
 Documentation & Examples
 ------------------------
 More formal documentation is forthcoming. For now, please review the [example project](https://github.com/sawbladejs/example) and [spec](https://github.com/sawbladejs/sawblade/blob/master/src/router.spec.js).
