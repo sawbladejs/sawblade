@@ -30,7 +30,7 @@ API
 ###bootstrap(root, routeConfiguration, urlProvider)
 Activates the router.
 
-**root**: The root context, i.e. the top-level element of your application
+**root**: The root context, i.e. the top-level element of your application. This is injected into the render function of any top-level routes in your route configuration.
 
 **routeConfiguration**: The route configuration (configuration API doc coming soon; for now, please see Documentation & Examples)
 
