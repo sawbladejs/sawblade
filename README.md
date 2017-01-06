@@ -29,8 +29,11 @@ API
 ---
 ###bootstrap(root, routeConfiguration, urlProvider)
 Activates the router.
+
 **root**: The root context, i.e. the top-level element of your application
+
 **routeConfiguration**: The route configuration (configuration API doc coming soon; for now, please see Documentation & Examples)
+
 **urlProvider**: The URL provider, such as an instance of the hash URL provider class
 
 Documentation & Examples
