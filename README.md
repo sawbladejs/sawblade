@@ -13,6 +13,7 @@ I was loving [Svelte](https://github.com/sveltejs/svelte), but it didn't have a 
 * Composable routing configuration (because I like to break routing configuration apart into multiple modules)
 * Hierarchical routes
 * Route parameters
+As you've probably already guessed, nothing matched (at least as far as I could tell), so this project was born.
 
 Documentation & Examples
 ------------------------
