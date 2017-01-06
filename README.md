@@ -40,13 +40,17 @@ bootstrap(new App({ target: document.getElementById('app') }), [
     children: [
       {
         path: '/',
-        render: ({ parent: users, params }) => new UserList({ target: users.refs.outlet, data: { page: params.page } }),
+        render: ({ parent: users, params }) => {
+          return new UserList({ target: users.refs.outlet, data: { page: params.page } });
+        },
         update: ({ context: userList, params }) => userList.set({ page: params.page }),
         teardown: userList => userList.teardown()
       },
       {
         path: '/:id',
-        render: ({ parent: users, params }) => new UserDetail({ target: users.refs.outlet, data: { id: params.id } }),
+        render: ({ parent: users, params }) => {
+          return new UserDetail({ target: users.refs.outlet, data: { id: params.id } });
+        },
         update: ({ context: userDetail, params }) => userDetail.set({ id: params.id }),
         teardown: userDetail => userDetail.teardown()
       }
