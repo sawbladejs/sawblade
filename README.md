@@ -76,7 +76,7 @@ Activates the router.
 
 **root**: The root context, i.e. the top-level element of your application. This is injected into the render function as the "parent" of any top-level routes in your route configuration.
 
-**routeConfiguration**: The route configuration (configuration API doc coming soon; for now, please see Documentation & Examples)
+**routeConfiguration**: An array of route configuration objects.
 
 **urlProvider**: The URL provider, such as an instance of the hash URL provider class
 
