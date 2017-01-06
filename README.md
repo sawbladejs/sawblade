@@ -16,6 +16,46 @@ I was loving [Svelte](https://github.com/sveltejs/svelte), but it didn't have a 
 
 As you've probably already guessed, nothing matched (at least as far as I could tell), so this project was born.
 
+Example
+-------
+```
+import { bootstrap } from 'sawblade';
+import HashUrlProvider from 'sawblade-hash';
+import App from './App';
+import Default from './Default';
+import Users from './Users';
+import UserList from './UserList';
+import UserDetail from './UserDetail';
+
+bootstrap(new App({ target: document.getElementById('app') }), [
+  {
+    path: '/',
+    render: ({ parent: app }) => new Default({ target: app.refs.outlet }),
+    teardown: defaultInstance => defaultInstance.teardown()
+  },
+  {
+    path: '/users',
+    render: ({ parent: app }) => new Users({ target: app.refs.outlet }),
+    teardown: users => users.teardown(),
+    children: [
+      {
+        path: '/',
+        render: ({ parent: users, params }) => new UserList({ target: users.refs.outlet, data: { page: params.page } }),
+        update: ({ context: userList, params }) => userList.set({ page: params.page }),
+        teardown: userList => userList.teardown()
+      },
+      {
+        path: '/:id',
+        render: ({ parent: users, params }) => new UserDetail({ target: users.refs.outlet, data: { id: params.id } }),
+        update: ({ context: userDetail, params }) => userDetail.set({ id: params.id }),
+        teardown: userDetail => userDetail.teardown()
+      }
+    ]
+  }
+], new HashUrlProvider());
+```
+For a more complete example, please review the [example project](https://github.com/sawbladejs/example).
+
 Installation
 ------------
 Install via npm:
@@ -52,7 +92,3 @@ Activates the router.
 **teardown(context)**: A function that is invoked when the route is de-activated. As in the *update* method, the *context* parameter is the value returned by the corresponding *render* function.
 
 **children**: An array of child routes.
-
-Documentation & Examples
-------------------------
-More formal documentation is forthcoming. For now, please review the [example project](https://github.com/sawbladejs/example) and [spec](https://github.com/sawbladejs/sawblade/blob/master/src/router.spec.js).
