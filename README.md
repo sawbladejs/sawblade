@@ -51,6 +51,8 @@ Activates the router.
 
 **teardown(context)**: A function that is invoked when the route is de-activated. As in the *update* method, the *context* parameter is the value returned by the corresponding *render* function.
 
+**children**: An array of child routes.
+
 Documentation & Examples
 ------------------------
 More formal documentation is forthcoming. For now, please review the [example project](https://github.com/sawbladejs/example) and [spec](https://github.com/sawbladejs/sawblade/blob/master/src/router.spec.js).
