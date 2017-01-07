@@ -40,7 +40,7 @@ bootstrap(new App({ target: document.getElementById('app') }), [
     children: [
       {
         path: '/',
-        render: ({ parent: users, params }) => {
+        render({ parent: users, params }) {
           return new UserList({ target: users.refs.outlet, data: { page: params.page } });
         },
         update: ({ context: userList, params }) => userList.set({ page: params.page }),
@@ -48,7 +48,7 @@ bootstrap(new App({ target: document.getElementById('app') }), [
       },
       {
         path: '/:id',
-        render: ({ parent: users, params }) => {
+        render({ parent: users, params }) {
           return new UserDetail({ target: users.refs.outlet, data: { id: params.id } });
         },
         update: ({ context: userDetail, params }) => userDetail.set({ id: params.id }),
