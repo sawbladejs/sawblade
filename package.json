@@ -1,7 +1,7 @@
 {
   "name": "sawblade",
   "version": "9.1.0",
-  "description": "Cutting through the B.S. of routing",
+  "description": "Cutting the B.S. out of client-side routing",
   "repository": {
     "type": "git",
     "url": "https://github.com/sawbladejs/sawblade"
