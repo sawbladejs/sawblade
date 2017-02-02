@@ -2,7 +2,12 @@ let urlProvider;
 
 export function bootstrap(root, routeConfigs, _urlProvider_) {
   urlProvider = _urlProvider_;
-  urlProvider.observe(createRouter(root, routeConfigs));
+  const router = createRouter(root, routeConfigs);
+  const unsubscribe = urlProvider.observe(url => router.handleUrlChange(url));
+  return () => {
+    unsubscribe();
+    router.teardown();
+  };
 }
 
 export function navigate(url) {
@@ -12,7 +17,13 @@ export function navigate(url) {
 function createRouter(root, routeConfigs) {
   let previousRouteInstances = [];
 
-  return function handleUrlChange(url) {
+  return { teardown, handleUrlChange };
+
+  function teardown() {
+    previousRouteInstances.reverse().forEach(instance => instance.teardown());
+  }
+
+  function handleUrlChange(url) {
     const nextRouteInstances = createRouteInstances(url, routeConfigs);
 
     previousRouteInstances

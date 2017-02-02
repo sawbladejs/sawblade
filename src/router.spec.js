@@ -5,12 +5,14 @@ import { bootstrap, navigate } from './router';
 describe('router', () => {
   let changeUrl;
 
+  const unsubscribe = spy();
   const rootContext = 'root context';
   const urlProvider = {
     get: stub(),
     set: spy(),
     observe(callback) {
       changeUrl = callback;
+      return unsubscribe;
     }
   };
 
@@ -18,7 +20,7 @@ describe('router', () => {
     return bootstrap(rootContext, routes, urlProvider);
   }
 
-  afterEach(() => urlProvider.set.reset());
+  afterEach(() => [unsubscribe, urlProvider.set].forEach(resettable => resettable.reset()));
 
   describe('when configured with two root-level routes', () => {
     const defaultRender = stub();
@@ -158,9 +160,12 @@ describe('router', () => {
     const listTeardown = spy();
 
     const detailRender = spy();
+    const detailTeardown = spy();
+
+    let teardown;
 
     beforeEach(() => {
-      createRoutes([
+      teardown = createRoutes([
         {
           path: '/users',
           render: usersRender,
@@ -177,14 +182,23 @@ describe('router', () => {
               path: '/:id',
               render: detailRender,
               update: () => {},
-              teardown: () => {}
+              teardown: detailTeardown
             }
           ]
         }
       ]);
     });
 
-    afterEach(() => [usersRender, usersTeardown, listRender, listTeardown, detailRender].forEach(spy => spy.reset()));
+    afterEach(() => {
+      [
+        usersRender,
+        usersTeardown,
+        listRender,
+        listTeardown,
+        detailRender,
+        detailTeardown
+      ].forEach(spy => spy.reset());
+    });
 
     describe('when the URL changes to /users/list', () => {
       beforeEach(() => changeUrl('/users/list'));
@@ -210,6 +224,20 @@ describe('router', () => {
 
         it('should activate the detail route', () => {
           expect(detailRender).to.have.been.calledWith(match.has('params', match({ id: 123 })));
+        });
+
+        describe('and then the router is torn down', () => {
+          beforeEach(() => teardown());
+
+          it('should tear down the routes', () => {
+            expect(detailTeardown).to.have.been.called;
+            expect(usersTeardown).to.have.been.called;
+            expect(detailTeardown).to.have.been.calledBefore(usersTeardown);
+          });
+
+          it('should unsubscribe from the URL provider', () => {
+            expect(unsubscribe).to.have.been.called;
+          });
         });
       });
     });
