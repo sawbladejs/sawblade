@@ -53,15 +53,15 @@ function createRouter(root, routeConfigs) {
   };
 }
 
-function createRouteInstances(url, routeConfigs) {
+function createRouteInstances(url, routeConfigs, parent) {
   const segment = url.match(/(\/[^/]*)/)[0];
   const routeConfig = routeConfigs.find(configsMatching(segment));
-  const routeInstance = new RouteInstance(segment, routeConfig);
+  const routeInstance = new RouteInstance(segment, routeConfig, parent);
   const descendantUrl = url.substring(segment.length);
   const { children } = routeConfig;
 
   if (descendantUrl && children) {
-    return [routeInstance].concat(createRouteInstances(descendantUrl, children));
+    return [routeInstance].concat(createRouteInstances(descendantUrl, children, routeInstance));
   }
 
   return [routeInstance];
@@ -84,9 +84,10 @@ function configsMatching(segment) {
 }
 
 class RouteInstance {
-  constructor(segment, routeConfig) {
+  constructor(segment, routeConfig, parent) {
     this.segment = segment;
     this.routeConfig = routeConfig;
+    this.parent = parent;
   }
 
   get params() {
@@ -104,7 +105,7 @@ class RouteInstance {
       params[path.substring(2)] = normalizeParamValue(segments[0].substring(1));
     }
 
-    return params;
+    return Object.assign({}, this.parent ? this.parent.params : null, params);
   }
 
   sameConfig(other) {

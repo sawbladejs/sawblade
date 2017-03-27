@@ -260,6 +260,47 @@ describe('router', () => {
     });
   });
 
+  describe('when configured with parameterized route with another parameterized route as its parent', () => {
+    let render, update;
+
+    beforeEach(() => {
+      render = spy();
+      update = spy();
+
+      createRoutes([
+        {
+          path: '/:categoryId',
+          render: () => {},
+          teardown: () => {},
+          children: [
+            {
+              path: '/:postId',
+              render,
+              update,
+              teardown: () => {}
+            }
+          ]
+        }
+      ]);
+    });
+
+    describe('when the URL changes to /321/123', () => {
+      beforeEach(() => changeUrl('/321/123'));
+
+      it('should provide parent and child route parameters to the child route', () => {
+        expect(render).to.have.been.calledWith(match.has('params', { categoryId: 321, postId: 123 }));
+      });
+
+      describe('and then the URL changes to /322/123', () => {
+        beforeEach(() => changeUrl('/322/123'));
+
+        it('should update the child route, including parent route parameters', () => {
+          expect(update).to.have.been.calledWith(match.has('params', { categoryId: 322, postId: 123 }));
+        });
+      });
+    });
+  });
+
   describe('navigate function', () => {
     describe('given a current URL of /users/', () => {
       beforeEach(() => urlProvider.get.returns('/users/'));
