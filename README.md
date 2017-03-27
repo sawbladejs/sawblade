@@ -71,7 +71,7 @@ Then import/require via your favorite module loader.
 
 API
 ---
-###bootstrap(root, routeConfiguration, urlProvider)
+### bootstrap(root, routeConfiguration, urlProvider)
 Activates the router.
 
 **root**: The root context, i.e. the top-level element of your application. This is injected into the render function as the "parent" of any top-level routes in your route configuration.
@@ -80,7 +80,7 @@ Activates the router.
 
 **urlProvider**: The URL provider, such as an instance of the hash URL provider class
 
-###route configuration: { path, render, update, teardown, children }
+### route configuration: { path, render, update, teardown, children }
 
 **path**: The URL of the route relative to the parent route.
 
@@ -97,5 +97,5 @@ Activates the router.
 
 **children**: An array of child routes.
 
-###navigate(url)
+### navigate(url)
 Navigates the router to the specified URL. Review the [spec](https://github.com/sawbladejs/sawblade/blob/master/src/router.spec.js#L235) for more information.
