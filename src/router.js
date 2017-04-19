@@ -113,7 +113,8 @@ class RouteInstance {
   }
 
   render(parent) {
-    return this.context = this.routeConfig.render({ parent, params: this.params });
+    const { render } = this.routeConfig;
+    return this.context = render ? render({ parent, params: this.params }) : null;
   }
 
   update() {
@@ -121,7 +122,8 @@ class RouteInstance {
   }
 
   teardown() {
-    return this.routeConfig.teardown(this.context);
+    const { teardown } = this.routeConfig;
+    return teardown ? teardown(this.context) : null;
   }
 }
 

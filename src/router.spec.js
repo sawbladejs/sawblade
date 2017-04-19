@@ -243,6 +243,17 @@ describe('router', () => {
     });
   });
 
+  describe('when configured with a route with no render/teardown methods', () => {
+    beforeEach(() => createRoutes([ { path: '/' }, { path: '/other', render: () => {} } ]));
+
+    it('should not throw when the route is activated', () => changeUrl('/'));
+
+    it('should not throw when the route is deactivated', () => {
+      changeUrl('/');
+      changeUrl('/other');
+    });
+  });
+
   describe('when configured with a route with no update method', () => {
     beforeEach(() => {
       createRoutes([
