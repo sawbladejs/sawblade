@@ -8,7 +8,9 @@
   },
   "license": "MIT",
   "main": "index.js",
-  "files": ["index.js"],
+  "files": [
+    "index.js"
+  ],
   "scripts": {
     "test": "./node_modules/.bin/mocha --require ./test.bootstrap.js --compilers js:babel-core/register \"src/**/*.spec.js\"",
     "prepublish": "./node_modules/.bin/webpack"
@@ -24,5 +26,8 @@
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
     "webpack": "^1.14.0"
+  },
+  "dependencies": {
+    "rxjs": "^5.3.0"
   }
 }
