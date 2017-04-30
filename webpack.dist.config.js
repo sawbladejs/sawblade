@@ -4,7 +4,7 @@ module.exports = {
     extensions: ['.js']
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -16,5 +16,6 @@ module.exports = {
     path: __dirname,
     filename: 'index.js',
     libraryTarget: 'umd'
-  }
+  },
+  externals: ['rxjs/Rx']
 };

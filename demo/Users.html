@@ -1,0 +1,17 @@
+<script>
+export default {
+  methods: {
+    navigate(url) {
+      this.get('navigate')(url);
+    }
+  }
+}
+</script>
+
+<h2>Users</h2>
+<ul>
+  <li><a href="javascript:void(0)" on:click="navigate(path+'/1')">User1</a></li>
+  <li><a href="javascript:void(0)" on:click="navigate(path+'/2')">User2</a></li>
+  <li><a href="javascript:void(0)" on:click="navigate(path+'/3')">User3</a></li>
+</ul>
+<div class="content" ref:outlet></div>

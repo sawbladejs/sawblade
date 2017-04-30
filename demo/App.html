@@ -1,0 +1,32 @@
+<script>
+import { bootstrap } from '../src';
+import routes from './routes';
+import url from './url';
+import navigate from './navigate';
+
+export default {
+  oncreate() {
+    this.teardownRouter = bootstrap(this, routes, url, navigate);
+  },
+  ondestroy() {
+    this.teardownRouter();
+  }
+}
+</script>
+
+<div class="app">
+  <h1>Demo App</h1>
+  <ul>
+    <li><a href="#/">Welcome</a></li>
+    <li><a href="#/users">Users</a></li>
+  </ul>
+
+  <div class="content" ref:outlet></div>
+</div>
+
+<style>
+.content {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+</style>

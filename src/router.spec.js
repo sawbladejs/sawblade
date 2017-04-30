@@ -157,5 +157,27 @@ describe('router', () => {
       navigateFactory.restore();
       expect(render).to.be.calledWith(match.has('navigate', expected));
     });
+
+    it('should automatically activate the / route if it exists when the URL does not end with /', () => {
+      const render = spy();
+      configure([ { path: '/users', children: [ { path: '/', render } ] } ]);
+      url.next('/users');
+      expect(render).to.be.called;
+    });
+
+    it('should provide the current path when rendering', () => {
+      const render = spy();
+      configure([ { path: '/users', children: [ { path: '/list', render } ] } ]);
+      url.next('/users/list;page=5');
+      expect(render).to.be.calledWith(match.has('path', '/users/list;page=5'));
+    });
+
+    it('should provide the current path when updating', () => {
+      const update = spy();
+      configure([ { path: '/users', children: [ { path: '/list', update } ] } ]);
+      url.next('/users/list;page=5');
+      url.next('/users/list;page=6');
+      expect(update).to.be.calledWith(match.has('path', '/users/list;page=6'));
+    });
   });
 });

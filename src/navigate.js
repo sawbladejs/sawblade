@@ -3,51 +3,44 @@ export default function navigate(currentUrl, navigateImpl) {
     navigateImpl(link(nextUrl));
   };
 
-  function link(url) {
-    if (url.startsWith(';')) {
-      const currentUrlLastSegment = currentUrl.substring(currentUrl.lastIndexOf('/'));
-      const currentUrlParams = currentUrlLastSegment
-        .split(';')
-        .slice(1)
-        .map(param => param.split('='))
-        .map(param => ({ [param[0]]: param[1] }))
-        .reduce((params, param) => Object.assign({}, params, param), {});
-
-      const newUrlParams = url
-        .substring(1)
-        .split(';')
-        .map(param => param.split('='))
-        .map(param => ({ [param[0]]: param[1] }))
-        .reduce((params, param) => Object.assign({}, params, param), {});
-
-      const params = Object.assign({}, currentUrlParams, newUrlParams);
-      const urlParams = Object.keys(params).map(key => `;${key}=${params[key]}`).join('');
-
-      return [
-        currentUrl.substring(0, currentUrl.lastIndexOf('/')),
-        currentUrl.substring(currentUrl.lastIndexOf('/')).split(';')[0],
-        urlParams
-      ].join('');
-    }
-
+  function link(url, baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'))) {
     if (url.startsWith('/')) {
       return url;
     }
 
     if (url.startsWith('./')) {
-      return currentUrl.substring(0, currentUrl.lastIndexOf('/')) + url.substring(1);
+      return [baseUrl, url.substring(2)].join('/');
     }
 
     if (url.startsWith('../')) {
-      return currentUrl
-        .split('/')
-        .slice(1)
-        .map(segment => `/${segment}`)
-        .filter((element, index, array) => index < array.length - 2)
-        .concat(url.substring(2))
-        .join('');
+      return link(url.substring(3), baseUrl.substring(0, baseUrl.lastIndexOf('/')))
     }
 
-    return currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1) + url;
+    if (url.startsWith(';')) {
+      const lastSegmentIndex = currentUrl.lastIndexOf('/');
+      const lastSegment = currentUrl.substring(lastSegmentIndex);
+
+      const currentParams = lastSegment
+        .split(';')
+        .slice(1)
+        .map(param => param.split('='))
+        .map(([ key, value ]) => ({ [key]: value }))
+        .reduce((params, param) => Object.assign({}, params, param), {});
+
+       const newParams = url
+        .substring(1)
+        .split(';')
+        .map(param => param.split('='))
+        .map(([ key, value ]) => ({ [key]: value }))
+        .reduce((params, param) => Object.assign({}, params, param), {});
+
+       const mergedParams = Object.assign({}, currentParams, newParams);
+
+       const params = Object.keys(mergedParams).map(key => `${key}=${mergedParams[key]}`).join(';');
+
+       return currentUrl.substring(0, lastSegmentIndex) + lastSegment.split(';')[0] + ';' + params;
+    }
+
+    return [baseUrl, url].join('/');
   }
 }

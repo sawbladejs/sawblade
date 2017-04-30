@@ -9,6 +9,7 @@ export default function bootstrap(root, config, url, navigate) {
 
       if (config.render) {
         this.context = config.render({
+          path: this.path,
           parent: this.parent ? this.parent.context : root,
           params: this.params,
           navigate: navigateFactory(this.path, navigate)
@@ -31,7 +32,7 @@ export default function bootstrap(root, config, url, navigate) {
     update(subpath) {
       this.subpath = subpath;
       const { update } = this.config;
-      update && update({ params: this.params, context: this.context });
+      update && update({ params: this.params, context: this.context, path: this.path });
     }
 
     teardown() {
@@ -53,9 +54,9 @@ export default function bootstrap(root, config, url, navigate) {
     for (let i = routes.length; i < path.length; i++) {
       const subpath = path[i];
       const parent = i === 0 ? null : routes[i - 1];
-      const configs = parent ? parent.config.children : config;
+      const configs = parent ? (parent.config.children || []) : config;
       const matchingConfig = findConfig(configs, subpath);
-      routes.push(new Route(subpath, matchingConfig, parent));
+      matchingConfig && routes.push(new Route(subpath, matchingConfig, parent));
     }
   });
 
@@ -66,15 +67,14 @@ export default function bootstrap(root, config, url, navigate) {
 }
 
 function urlToPath(url) {
-  return url.substring(1).split('/').map(subpath => `/${subpath}`);
+  const path = url.substring(1).split('/').map(subpath => `/${subpath}`);
+  (path[path.length - 1] !== '/') && path.push('/');
+  return path;
 }
 
 function findConfig(configs, subpath) {
   const testSubpath = subpath.split(';')[0];
   const matchingConfig = configs.find(config => configMatchesSubpath(config, subpath));
-  if (!matchingConfig) {
-    throw new Error(`No matching configuration found for path ${subpath}!`);
-  }
   return matchingConfig;
 }
 
